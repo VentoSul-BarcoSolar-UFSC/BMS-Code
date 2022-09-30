@@ -1,11 +1,12 @@
   // CAN Receive Example
 //
-
+#include <wire.h>
 #include <LiquidCrystal_I2C.h>
 #include <mcp_can.h>
 #include <SPI.h>
+#include <LiquidCrystal_I2C.h>
 
-LiquidCrystal_I2C lcd(0x3F, 16, 2); //pegar o endereço do lcd com o I2C Scanner e substituir 0x27 
+LiquidCrystal_I2C lcd(0x20, 20, 4); //pegar o endereço do lcd com o I2C Scanner e substituir 0x27 
 /*
  * link para o I2C Scanner:
  * https://www.arduinoportugal.pt/saber-enderecos-dos-dispositivos-ligados-ao-barramento-i2c/#:~:text=Verifica%20ainda%20qual%20o%20endere%C3%A7o%20de%20cada%20dispositivo%20i2c%20ligado%20ao%20Arduino.&text=Basta%20fazer%20as%20seguintes%20quatro%20conex%C3%B5es%20entre%20o%20dispositivo%20Arduino%20e%20I2C.&text=Copie%20o%20seguinte%20codigo%20para,endere%C3%A7o%20dos%20dispositivos%20i2c%20anexados.
@@ -166,10 +167,12 @@ void loop()
   byte sndStat = CAN0.sendMsgBuf(0x11000000, 1, 8, data);
   if(sndStat == CAN_OK)
   {
-      lcd.print("msgSentSuccess!");
+      //lcd.print("msgSentSuccess!");
+      lcd.print("Deu boa, galera!");
     } else 
     {
-      lcd.print("Err sendMsg...");
+      //lcd.print("Err sendMsg...");
+      lcd.print("Fudeu...");
     }
     count=0;
   }
@@ -180,12 +183,14 @@ void loop()
  {
     lcd.setCursor(0,0);
     lcd.print("C1: ");
-    lcd.print(Current1, DEC);  // print as an ASCII-encoded decimal  
+    lcd.print(Current1, DEC);  // print as an ASCII-encoded decimal
+    lcd.setCursor(0,1);  
     lcd.print("C2: ");
     lcd.print(Current2, DEC);  // print as an ASCII-encoded decimal
-    lcd.setCursor(0,1);
+    lcd.setCursor(0,2);
     lcd.print("Vpack: ");
     lcd.print(Vpack, DEC);  // print as an ASCII-encoded decimal
+    lcd.setCursor(0,3);
     lcd.print("SoC: ");
     lcd.print(SoC, DEC);  // print as an ASCII-encoded decimal   
 
