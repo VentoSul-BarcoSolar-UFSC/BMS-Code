@@ -1,12 +1,12 @@
   // CAN Receive Example
 //
-#include <wire.h>
+#include <Wire.h>
 #include <LiquidCrystal_I2C.h>
 #include <mcp_can.h>
 #include <SPI.h>
 #include <LiquidCrystal_I2C.h>
 
-LiquidCrystal_I2C lcd(0x20, 20, 4); //pegar o endereço do lcd com o I2C Scanner e substituir 0x27 
+LiquidCrystal_I2C lcd(0x27, 20, 4); //pegar o endereço do lcd com o I2C Scanner e substituir 0x27 
 /*
  * link para o I2C Scanner:
  * https://www.arduinoportugal.pt/saber-enderecos-dos-dispositivos-ligados-ao-barramento-i2c/#:~:text=Verifica%20ainda%20qual%20o%20endere%C3%A7o%20de%20cada%20dispositivo%20i2c%20ligado%20ao%20Arduino.&text=Basta%20fazer%20as%20seguintes%20quatro%20conex%C3%B5es%20entre%20o%20dispositivo%20Arduino%20e%20I2C.&text=Copie%20o%20seguinte%20codigo%20para,endere%C3%A7o%20dos%20dispositivos%20i2c%20anexados.
@@ -48,10 +48,7 @@ int versao,power,maxtemp, mintemp, maxvolt, minvolt;
 int temp[24]={0};
 int voltage[48]={0};
 int Vpack,   Current1,Current2,SoC;
-
-int* backup[]={&versao,&power,&maxtemp, &mintemp, &maxvolt, &minvolt,&Vpack,&Current1,&Current2,&SoC};
 const int chipSelect = 4;
-const char* header="Tensão;Temp;Ver.;Pow;TMax;TMin;VMax;VMin;VPack;Corrente 1;Corrente 2;SoC";
 
 void setup()
 {
@@ -181,9 +178,17 @@ void loop()
   //*****************************************************
  if(readcan>=16) //se leu valores pelo CAN então printa o que possível na ordem certa:
  {
+  /*
+    Trecho de código destinado a escrever no display LCD
+    utilizando a biblioteca liquidcrystal.h
+  */
+    int temp=(maxtemp+mintemp)/2;
+    lcd.clear(); //Limpa o Display
     lcd.setCursor(0,0);
     lcd.print("C1: ");
     lcd.print(Current1, DEC);  // print as an ASCII-encoded decimal
+    lcd.print(" Temp.:");
+    lcd.print(temp,DEC);
     lcd.setCursor(0,1);  
     lcd.print("C2: ");
     lcd.print(Current2, DEC);  // print as an ASCII-encoded decimal
@@ -194,27 +199,14 @@ void loop()
     lcd.print("SoC: ");
     lcd.print(SoC, DEC);  // print as an ASCII-encoded decimal   
 
-  /*
-    char j=1;
-    Serial.print("\nTemp CMU1 1-8:\t");
-    for(byte i = 1; i<=8; i++)
-    { 
-      Serial.print(temp[i], DEC);  // print as an ASCII-encoded decimal
-      Serial.print("\t");
-    }
+    /*
+      Feito por:
+        Abiel Pisa
+        Felipe Negrão
+        Gabriel Müller
+      30/09/2022
+    */
 
-    
-    Serial.print("\n\n Voltages CMU1 1-16:\n");
-    for(byte i = 1; i<=16; i++)
-    { 
-      if(i==9)
-      Serial.print("\n");
-      Serial.print(voltage[i], DEC);  // print as an ASCII-encoded decimal
-      Serial.print("\t");
-    }
-
-   Serial.print("\n\n\n");
-  */ //dados mantidos fora do lcd para testes
    readcan=0;
  }
   
